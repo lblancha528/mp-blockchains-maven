@@ -3,13 +3,29 @@ package edu.grinnell.csc207.blockchains;
 /**
  * Blocks to be stored in blockchains.
  *
- * @author Your Name Here
+ * @author Lily Blanchard
+ * @author AJ Trimble
  * @author Samuel A. Rebelsky
  */
 public class Block {
   // +--------+------------------------------------------------------
   // | Fields |
   // +--------+
+
+  /** The block number. */
+  int num;
+
+  /** The transaction. */
+  Transaction transaction;
+
+  /** The previous hash. */
+  Hash prevHash;
+
+  /** The nonce. */
+  int nonce;
+
+  /** The hash of this block. */
+  Hash thisHash;
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -31,7 +47,10 @@ public class Block {
    */
   public Block(int num, Transaction transaction, Hash prevHash,
       HashValidator check) {
-    // STUB
+    this.num = num;
+    this.transaction = transaction;
+    this.prevHash = prevHash;
+    this.nonce = mine(check);
   } // Block(int, Transaction, Hash, HashValidator)
 
   /**
@@ -72,7 +91,7 @@ public class Block {
    * @return the number of the block.
    */
   public int getNum() {
-    return 0;   // STUB
+    return this.num;
   } // getNum()
 
   /**
@@ -81,7 +100,7 @@ public class Block {
    * @return the transaction.
    */
   public Transaction getTransaction() {
-    return new Transaction("Here", "There", 0); // STUB
+    return this.transaction;
   } // getTransaction()
 
   /**
@@ -90,7 +109,7 @@ public class Block {
    * @return the nonce.
    */
   public long getNonce() {
-    return 0;   // STUB
+    return this.nonce;
   } // getNonce()
 
   /**
@@ -99,7 +118,7 @@ public class Block {
    * @return the hash of the previous block.
    */
   Hash getPrevHash() {
-    return new Hash(new byte[] {0});  // STUB
+    return this.prevHash;
   } // getPrevHash
 
   /**
@@ -108,7 +127,7 @@ public class Block {
    * @return the hash of the current block.
    */
   Hash getHash() {
-    return new Hash(new byte[] {0});  // STUB
+    return this.thisHash;
   } // getHash
 
   /**
