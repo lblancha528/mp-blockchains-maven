@@ -10,11 +10,11 @@ Authors
 
 Acknowledgements
 
-* _Forthcoming_.
+* 11/20/24: Evening tutors: Audrey, help with Hash.equals()
+                            Boston, help with finding nonces
 
 This code may be found at <https://github.com/lblancha528/mp-blockchains-maven>. The original code may be found at <https://github.com/Grinnell-CSC207/mp-blockchinas-maven>.
 
 To Do:
-* Hash.equals ??
-* Hash.toString ??
 * Block constructors? how to mine for nonce with validator when mine is in blockChain??
+* Implement BlockChainUI switch statement

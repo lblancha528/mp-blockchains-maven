@@ -1,6 +1,7 @@
 package edu.grinnell.csc207.blockchains;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * Encapsulated hashes.
@@ -27,7 +28,10 @@ public class Hash {
    * @param data The data to copy into the hash.
    */
   public Hash(byte[] data) {
-    this.contents = data;
+    this.contents = new byte[data.length];
+    for (int i = 0; i < data.length; i++) {
+      this.contents[i] = data[i];
+    } // for
   } // Hash(byte[])
 
   // +---------+-----------------------------------------------------
@@ -61,7 +65,9 @@ public class Hash {
    */
   public byte[] getBytes() {
     byte[] copy = new byte[this.length()];
-    copy = this.contents;
+    for (int i = 0; i < this.contents.length; i++) {
+      copy[i] = this.contents[i];
+    } // for
     return copy;
   } // getBytes()
 
@@ -71,11 +77,11 @@ public class Hash {
    * @return the hash as a hex string.
    */
   public String toString() {
-    String str = "";
+    StringBuilder str = new StringBuilder();
     for (int i = 0; i < this.length(); i++) {
-      str = str + Byte.toUnsignedInt(this.contents[i]);
+      str.append(String.format("%02X", Byte.toUnsignedInt(this.contents[i])));
     } // for
-    return String.format("%02X", str);
+    return str.toString();
   } // toString()
 
   /**
@@ -88,7 +94,11 @@ public class Hash {
   public boolean equals(Object other) {
     if (other instanceof Hash) {
       Hash o = (Hash) other;
-      return Array.equals(o.contents, this.contents);
+      if (Arrays.equals(o.contents, this.contents)) {
+        return true;
+      } else {
+        return false;
+      } // if
     } else {
       return false;
     } // if

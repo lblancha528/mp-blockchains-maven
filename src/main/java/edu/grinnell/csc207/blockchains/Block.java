@@ -1,5 +1,10 @@
 package edu.grinnell.csc207.blockchains;
 
+import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Random;
+
 /**
  * Blocks to be stored in blockchains.
  *
@@ -13,60 +18,85 @@ public class Block {
   // +--------+
 
   /** The block number. */
-  int num;
+  static int num;
 
   /** The transaction. */
-  Transaction transaction;
+  static Transaction transaction;
 
   /** The previous hash. */
-  Hash prevHash;
+  static Hash prevHash = null;
 
   /** The nonce. */
-  int nonce;
+  static long nonce;
 
   /** The hash of this block. */
-  Hash thisHash;
+  static Hash thisHash;
 
   // +--------------+------------------------------------------------
   // | Constructors |
   // +--------------+
 
   /**
-   * Create a new block from the specified block number, transaction, and
-   * previous hash, mining to choose a nonce that meets the requirements
-   * of the validator.
+   * Create a new block from the specified block number, transaction, and previous hash, mining to
+   * choose a nonce that meets the requirements of the validator.
    *
-   * @param num
-   *   The number of the block.
-   * @param transaction
-   *   The transaction for the block.
-   * @param prevHash
-   *   The hash of the previous block.
-   * @param check
-   *   The validator used to check the block.
+   * @param num The number of the block.
+   * @param transaction The transaction for the block.
+   * @param prevHash The hash of the previous block.
+   * @param check The validator used to check the block.
    */
-  public Block(int num, Transaction transaction, Hash prevHash,
-      HashValidator check) {
+  public Block(int num, Transaction transaction, Hash prevHash, HashValidator check) {
     this.num = num;
     this.transaction = transaction;
     this.prevHash = prevHash;
-    this.nonce = mine(check);
+    boolean foundNonce = false;
+    while (!foundNonce) {
+      Long rand = new Random().nextLong();
+      this.nonce = rand;
+      MessageDigest md;
+      try {
+        md = MessageDigest.getInstance("sha-256");
+        byte[] numbytes = ByteBuffer.allocate(Integer.BYTES).putInt(num).array();
+        md.update(numbytes);
+        md.update(transaction.getSource().getBytes());
+        md.update(transaction.getTarget().getBytes());
+        byte[] amtbytes =
+            ByteBuffer.allocate(Integer.BYTES).putInt(transaction.getAmount()).array();
+        md.update(amtbytes);
+        if (prevHash != null) {
+          md.update(prevHash.getBytes());
+        } // if prevHash exists
+        byte[] noncebytes = ByteBuffer.allocate(Long.BYTES).putLong(nonce).array();
+        md.update(noncebytes);
+
+        this.thisHash = new Hash(md.digest());
+      } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+      }
+
+      if (check.isValid(this.thisHash)) {
+        foundNonce = true;
+      } // if
+      md = null;
+    } // while
   } // Block(int, Transaction, Hash, HashValidator)
 
   /**
    * Create a new block, computing the hash for the block.
    *
-   * @param num
-   *   The number of the block.
-   * @param transaction
-   *   The transaction for the block.
-   * @param prevHash
-   *   The hash of the previous block.
-   * @param nonce
-   *   The nonce of the block.
+   * @param num The number of the block.
+   * @param transaction The transaction for the block.
+   * @param prevHash The hash of the previous block.
+   * @param nonce The nonce of the block.
    */
-  public Block(int num, Transaction transaction, Hash prevHash, long nonce) {
-    // STUB
+  public Block(int num, Transaction transaction, Hash prevHash,
+      long nonce) /* throws NoSuchAlgorithmException */ {
+    this.num = num;
+    this.transaction = transaction;
+    this.prevHash = prevHash;
+    this.nonce = nonce;
+    computeHash();
+
   } // Block(int, Transaction, Hash, long)
 
   // +---------+-----------------------------------------------------
@@ -74,11 +104,28 @@ public class Block {
   // +---------+
 
   /**
-   * Compute the hash of the block given all the other info already
-   * stored in the block.
+   * Compute the hash of the block given all the other info already stored in the block.
    */
   static void computeHash() {
-    // STUB
+    MessageDigest md;
+    try {
+      md = MessageDigest.getInstance("sha-256");
+      byte[] numbytes = ByteBuffer.allocate(Integer.BYTES).putInt(num).array();
+      md.update(numbytes);
+      md.update(transaction.getSource().getBytes());
+      md.update(transaction.getTarget().getBytes());
+      byte[] amtbytes = ByteBuffer.allocate(Integer.BYTES).putInt(transaction.getAmount()).array();
+      md.update(amtbytes);
+      if (prevHash != null) {
+        md.update(prevHash.getBytes());
+      } // if prevHash exists
+      byte[] noncebytes = ByteBuffer.allocate(Long.BYTES).putLong(nonce).array();
+      md.update(noncebytes);
+
+      thisHash = new Hash(md.digest());
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    }
   } // computeHash()
 
   // +---------+-----------------------------------------------------
@@ -136,6 +183,21 @@ public class Block {
    * @return a string representation of the block.
    */
   public String toString() {
-    return "";  // STUB
+    StringBuilder str = new StringBuilder();
+    str.append("Block ");
+    str.append(this.num);
+    str.append(" (Transaction: [Source: ");
+    str.append(this.transaction.getSource());
+    str.append(", Target: ");
+    str.append(this.transaction.getTarget());
+    str.append(", Amount: ");
+    str.append(this.transaction.getAmount());
+    str.append(", Nonce: ");
+    str.append(this.nonce);
+    str.append(", prevHash: ");
+    str.append(this.prevHash);
+    str.append(", hash: ");
+    str.append(this.thisHash);
+    return str.toString();
   } // toString()
 } // class Block
