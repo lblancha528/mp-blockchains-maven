@@ -8,16 +8,24 @@ import edu.grinnell.csc207.blockchains.Transaction;
 import edu.grinnell.csc207.util.IOUtils;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 /**
  * A simple UI for our BlockChain class.
  *
- * @author Your Name Here
+ * @author Lily Blanchard
+ * @author AJ Trimble
  * @author Samuel A. Rebelsky
  */
 public class BlockChainUI {
+  // +--------+------------------------------------------------------
+  // | Fields |
+  // +--------+
+
+
+
   // +-----------+---------------------------------------------------
   // | Constants |
   // +-----------+
@@ -27,6 +35,11 @@ public class BlockChainUI {
    */
   static final int VALIDATOR_BYTES = 0;
 
+  /**
+   * Default capacity of balances hash map.
+   */
+  static final int DEFAULT_CAPACITY = 10;
+
   // +---------+-----------------------------------------------------
   // | Helpers |
   // +---------+
@@ -34,23 +47,24 @@ public class BlockChainUI {
   /**
    * Print out the instructions.
    *
-   * @param pen
-   *   The pen used for printing instructions.
+   * @param pen The pen used for printing instructions.
    */
   public static void instructions(PrintWriter pen) {
     pen.println("""
-      Valid commands:
-        mine: discovers the nonce for a given transaction
-        append: appends a new block onto the end of the chain
-        remove: removes the last block from the end of the chain
-        check: checks that the block chain is valid
-        users: prints a list of users
-        balance: finds a user's balance
-        transactions: prints out the chain of transactions
-        blocks: prints out the chain of blocks (for debugging only)
-        help: prints this list of commands
-        quit: quits the program""");
+        Valid commands:
+          mine: discovers the nonce for a given transaction
+          append: appends a new block onto the end of the chain
+          remove: removes the last block from the end of the chain
+          check: checks that the block chain is valid
+          users: prints a list of users
+          balance: finds a user's balance
+          transactions: prints out the chain of transactions
+          blocks: prints out the chain of blocks (for debugging only)
+          help: prints this list of commands
+          quit: quits the program""");
   } // instructions(PrintWriter)
+
+
 
   // +------+--------------------------------------------------------
   // | Main |
@@ -59,26 +73,24 @@ public class BlockChainUI {
   /**
    * Run the UI.
    *
-   * @param args
-   *   Command-line arguments (currently ignored).
+   * @param args Command-line arguments (currently ignored).
    */
   public static void main(String[] args) throws Exception {
     PrintWriter pen = new PrintWriter(System.out, true);
     BufferedReader eyes = new BufferedReader(new InputStreamReader(System.in));
 
     // Set up our blockchain.
-    HashValidator validator =
-        (h) -> {
-          if (h.length() < VALIDATOR_BYTES) {
-            return false;
-          } // if
-          for (int v = 0; v < VALIDATOR_BYTES; v++) {
-            if (h.get(v) != 0) {
-              return false;
-            } // if
-          } // for
-          return true;
-        };
+    HashValidator validator = (h) -> {
+      if (h.length() < VALIDATOR_BYTES) {
+        return false;
+      } // if
+      for (int v = 0; v < VALIDATOR_BYTES; v++) {
+        if (h.get(v) != 0) {
+          return false;
+        } // if
+      } // for
+      return true;
+    };
     BlockChain chain = new BlockChain(validator);
 
     instructions(pen);
@@ -100,10 +112,18 @@ public class BlockChainUI {
       switch (command.toLowerCase()) {
         case "append":
           pen.printf("Command '%s' is not yet implemented", command);
+          // create a new block, with the provided people and amt
+          // link this to the end of the chain
           break;
 
         case "balance":
-          pen.printf("Command '%s' is not yet implemented", command);
+          pen.printf("User: ");
+          String user = eyes.readLine();
+          if (balances.containsKey(user)) {
+            pen.printf(user + "'s balance is " + balances.get(user));
+          } else {
+            pen.printf(user + " does not exist");
+          } // if
           break;
 
         case "blocks":
@@ -153,3 +173,5 @@ public class BlockChainUI {
     pen.close();
   } // main(String[])
 } // class BlockChainUI
+
+// add check to expand people[]

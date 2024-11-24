@@ -95,7 +95,7 @@ public class Block {
     this.transaction = transaction;
     this.prevHash = prevHash;
     this.nonce = nonce;
-    computeHash();
+    this.thisHash = computeHash();
 
   } // Block(int, Transaction, Hash, long)
 
@@ -105,8 +105,9 @@ public class Block {
 
   /**
    * Compute the hash of the block given all the other info already stored in the block.
+   * @return the hash
    */
-  static void computeHash() {
+  static Hash computeHash() {
     MessageDigest md;
     try {
       md = MessageDigest.getInstance("sha-256");
@@ -122,7 +123,7 @@ public class Block {
       byte[] noncebytes = ByteBuffer.allocate(Long.BYTES).putLong(nonce).array();
       md.update(noncebytes);
 
-      thisHash = new Hash(md.digest());
+      return new Hash(md.digest());
     } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
