@@ -14,6 +14,3 @@ Acknowledgements
                             Boston, help with finding nonces
 
 This code may be found at <https://github.com/lblancha528/mp-blockchains-maven>. The original code may be found at <https://github.com/Grinnell-CSC207/mp-blockchinas-maven>.
-
-To Do:
-* Implement BlockChainUI switch statement
