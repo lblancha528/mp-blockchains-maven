@@ -9,8 +9,7 @@ public interface HashValidator {
   /**
    * Determine if a hash meets some criterion.
    *
-   * @param hash
-   *   The hash we're checking.
+   * @param hash The hash we're checking.
    *
    * @return true if the hash is valid and false otehrwise.
    */

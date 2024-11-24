@@ -52,9 +52,7 @@ public class BlockChain implements Iterable<Transaction> {
    * @param check The validator used to check elements.
    */
   public BlockChain(HashValidator check) {
-    Transaction emptyTrans = new Transaction(null, null, 0);
-    Block emptyBlock = new Block(0, emptyTrans, null, check);
-    this.front = new Node(emptyBlock);
+    this.front = new Node(new Block(0, new Transaction(null, null, 0), null, check));
     this.back = this.front;
     this.check = check;
   } // BlockChain(HashValidator)
@@ -87,6 +85,17 @@ public class BlockChain implements Iterable<Transaction> {
     } // if
   } // checkTransaction(String, String, int)
 
+  public Node getFront() {
+    return this.front;
+  } // getFront()
+
+  public Node getBack() {
+    return this.back;
+  } // getBack()
+
+  public HashMap<String, Integer> getBalances() {
+    return this.balances;
+  }
   // +---------+-----------------------------------------------------
   // | Methods |
   // +---------+
@@ -208,7 +217,7 @@ public class BlockChain implements Iterable<Transaction> {
           && checkTransaction(here.block.transaction.getSource(),
               here.block.transaction.getTarget(), here.block.transaction.getAmount())) {
       } else {
-        throw new Exception("Block " + here.block.getNum() + " is invalid.\n"); 
+        throw new Exception("Block " + here.block.getNum() + " is invalid.\n");
       } // if
     } // while
   } // check()
@@ -220,13 +229,17 @@ public class BlockChain implements Iterable<Transaction> {
    */
   public Iterator<String> users() {
     return new Iterator<String>() {
-      Iterator<String> nit = this.balances;
+      String[] userArray = (String[]) balances.keySet().toArray();
+      int here = 0;
+
       public boolean hasNext() {
-        return false; // STUB
+        return here < userArray.length;
       } // hasNext()
 
       public String next() {
-        throw new NoSuchElementException(); // STUB
+        String user = userArray[here];
+        here++;
+        return user;
       } // next()
     };
   } // users()
@@ -253,13 +266,16 @@ public class BlockChain implements Iterable<Transaction> {
    */
   public Iterator<Block> blocks() {
     return new Iterator<Block>() {
-      Iterator<Block> nit = this.front.block;
+      private Node here = BlockChain.this.front;
+
       public boolean hasNext() {
-        return nit.hasNext();
+        return this.here != null;
       } // hasNext()
 
       public Block next() {
-        return nit.next();
+        Block hereBlock = this.here.block;
+        this.here = this.here.next;
+        return hereBlock;
       } // next()
     };
   } // blocks()
@@ -271,12 +287,16 @@ public class BlockChain implements Iterable<Transaction> {
    */
   public Iterator<Transaction> iterator() {
     return new Iterator<Transaction>() {
+      private Node here = BlockChain.this.front;
+
       public boolean hasNext() {
-        return false; // STUB
+        return this.here != null;
       } // hasNext()
 
       public Transaction next() {
-        throw new NoSuchElementException(); // STUB
+        Transaction hereTrans = this.here.block.transaction;
+        this.here = this.here.next;
+        return hereTrans;
       } // next()
     };
   } // iterator()

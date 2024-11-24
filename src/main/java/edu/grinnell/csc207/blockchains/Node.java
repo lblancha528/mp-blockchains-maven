@@ -18,4 +18,12 @@ public class Node {
     this.block = block;
     this.next = null;
   } // Node(Block)
+
+  public Block getBlock() {
+    return this.block;
+  } // getBlock()
+
+  public Node getNext() {
+    return this.next;
+  } // getNext()
 } // class Node

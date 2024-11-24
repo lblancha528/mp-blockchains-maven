@@ -58,8 +58,16 @@ public class Block {
         md = MessageDigest.getInstance("sha-256");
         byte[] numbytes = ByteBuffer.allocate(Integer.BYTES).putInt(num).array();
         md.update(numbytes);
-        md.update(transaction.getSource().getBytes());
-        md.update(transaction.getTarget().getBytes());
+        if (transaction.getSource() == null) {
+          md.update(new byte[] {0, 0, 0, 0, 0, 0});
+        } else {
+          md.update(transaction.getSource().getBytes());
+        } // if null source, submit null bytes
+        if (transaction.getSource() == null) {
+          md.update(new byte[] {0, 0, 0, 0, 0, 0});
+        } else {
+          md.update(transaction.getTarget().getBytes());
+        } // if null target, submit null bytes
         byte[] amtbytes =
             ByteBuffer.allocate(Integer.BYTES).putInt(transaction.getAmount()).array();
         md.update(amtbytes);
@@ -105,6 +113,7 @@ public class Block {
 
   /**
    * Compute the hash of the block given all the other info already stored in the block.
+   * 
    * @return the hash
    */
   static Hash computeHash() {
@@ -127,6 +136,7 @@ public class Block {
     } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
+    return null;
   } // computeHash()
 
   // +---------+-----------------------------------------------------
@@ -165,7 +175,7 @@ public class Block {
    *
    * @return the hash of the previous block.
    */
-  Hash getPrevHash() {
+  public Hash getPrevHash() {
     return this.prevHash;
   } // getPrevHash
 
@@ -174,7 +184,7 @@ public class Block {
    *
    * @return the hash of the current block.
    */
-  Hash getHash() {
+  public Hash getHash() {
     return this.thisHash;
   } // getHash
 
