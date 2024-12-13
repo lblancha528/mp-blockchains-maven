@@ -128,25 +128,34 @@ public class BlockChain implements Iterable<Transaction> {
    * @throws IllegalArgumentException if (a) the hash is not valid, (b) the hash is not appropriate
    *         for the contents, or (c) the previous hash is incorrect.
    */
-  public void append(Block blk) {
-    if (check.isValid(blk.thisHash) && blk.computeHash() == blk.getHash()
-        && blk.prevHash == back.block.thisHash) {
-      this.back.next = new Node(blk);
-      this.back = this.back.next;
-      this.size++;
-      if (this.balances.containsKey(blk.transaction.getSource())) {
-        this.balances.replace(blk.transaction.getSource(),
-            this.balances.get(blk.transaction.getSource()) - blk.transaction.getAmount());
-      } // if source exists
-      if (this.balances.containsKey(blk.transaction.getTarget())) {
-        this.balances.replace(blk.transaction.getTarget(),
-            this.balances.get(blk.transaction.getTarget()) + blk.transaction.getAmount());
-      } else {
-        this.balances.put(blk.transaction.getTarget(), blk.transaction.getAmount());
-      } // if target exists
-    } else {
-      throw new IllegalArgumentException();
+  public void append(Block blk) throws Exception {
+    if (!check.isValid(blk.thisHash)) {
+      System.out.println(blk.thisHash);
+      throw new Exception("Fails validator.");
     } // if
+
+    if (!blk.getHash().equals(blk.computeHash())) {
+      throw new Exception("Hashes inequal.");
+    } // if
+
+    if (!blk.prevHash.equals(back.block.thisHash)) {
+      System.out.println("" + back.block.thisHash + " " + blk.prevHash);
+      throw new Exception("Prev hash wrong.");
+    } // if
+
+    this.back.next = new Node(blk);
+    this.back = this.back.next;
+    this.size++;
+    if (this.balances.containsKey(blk.transaction.getSource())) {
+      this.balances.replace(blk.transaction.getSource(),
+          this.balances.get(blk.transaction.getSource()) - blk.transaction.getAmount());
+    } // if source exists
+    if (this.balances.containsKey(blk.transaction.getTarget())) {
+      this.balances.replace(blk.transaction.getTarget(),
+          this.balances.get(blk.transaction.getTarget()) + blk.transaction.getAmount());
+    } else {
+      this.balances.put(blk.transaction.getTarget(), blk.transaction.getAmount());
+    } // if target exists
   } // append()
 
   /**

@@ -3,7 +3,6 @@ package edu.grinnell.csc207.blockchains;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Random;
 
 /**
  * Blocks to be stored in blockchains.
@@ -46,47 +45,11 @@ public class Block {
    * @param check The validator used to check the block.
    */
   public Block(int num, Transaction transaction, Hash prevHash, HashValidator check) {
-    this.num = num;
-    this.transaction = transaction;
-    this.prevHash = prevHash;
-    boolean foundNonce = false;
-    while (!foundNonce) {
-      Long rand = new Random().nextLong();
-      this.nonce = rand;
-      MessageDigest md;
-      try {
-        md = MessageDigest.getInstance("sha-256");
-        byte[] numbytes = ByteBuffer.allocate(Integer.BYTES).putInt(num).array();
-        md.update(numbytes);
-        if (transaction.getSource() == null) {
-          md.update(new byte[] {0, 0, 0, 0, 0, 0});
-        } else {
-          md.update(transaction.getSource().getBytes());
-        } // if null source, submit null bytes
-        if (transaction.getSource() == null) {
-          md.update(new byte[] {0, 0, 0, 0, 0, 0});
-        } else {
-          md.update(transaction.getTarget().getBytes());
-        } // if null target, submit null bytes
-        byte[] amtbytes =
-            ByteBuffer.allocate(Integer.BYTES).putInt(transaction.getAmount()).array();
-        md.update(amtbytes);
-        if (prevHash != null) {
-          md.update(prevHash.getBytes());
-        } // if prevHash exists
-        byte[] noncebytes = ByteBuffer.allocate(Long.BYTES).putLong(nonce).array();
-        md.update(noncebytes);
-
-        this.thisHash = new Hash(md.digest());
-      } catch (NoSuchAlgorithmException e) {
-        e.printStackTrace();
-      }
-
-      if (check.isValid(this.thisHash)) {
-        foundNonce = true;
-      } // if
-      md = null;
+    this(num, transaction, prevHash, (long) 0);
+    while (!check.isValid(computeHash())) {
+      nonce++;
     } // while
+    thisHash = computeHash();
   } // Block(int, Transaction, Hash, HashValidator)
 
   /**
@@ -97,13 +60,13 @@ public class Block {
    * @param prevHash The hash of the previous block.
    * @param nonce The nonce of the block.
    */
-  public Block(int num, Transaction transaction, Hash prevHash,
-      long nonce) /* throws NoSuchAlgorithmException */ {
-    this.num = num;
-    this.transaction = transaction;
-    this.prevHash = prevHash;
-    this.nonce = nonce;
-    this.thisHash = computeHash();
+  public Block(int num1, Transaction transaction1, Hash prevHash1,
+      long nonce1) /* throws NoSuchAlgorithmException */ {
+    num = num1;
+    transaction = transaction1;
+    prevHash = prevHash1;
+    nonce = nonce1;
+    thisHash = computeHash();
 
   } // Block(int, Transaction, Hash, long)
 
@@ -122,8 +85,12 @@ public class Block {
       md = MessageDigest.getInstance("sha-256");
       byte[] numbytes = ByteBuffer.allocate(Integer.BYTES).putInt(num).array();
       md.update(numbytes);
-      md.update(transaction.getSource().getBytes());
-      md.update(transaction.getTarget().getBytes());
+      if (transaction.getSource() != null) {
+        md.update(transaction.getSource().getBytes());
+      } // if source exists
+      if (transaction.getTarget() != null) {
+        md.update(transaction.getTarget().getBytes());
+      } // if target exists
       byte[] amtbytes = ByteBuffer.allocate(Integer.BYTES).putInt(transaction.getAmount()).array();
       md.update(amtbytes);
       if (prevHash != null) {
@@ -149,7 +116,7 @@ public class Block {
    * @return the number of the block.
    */
   public int getNum() {
-    return this.num;
+    return num;
   } // getNum()
 
   /**
@@ -158,7 +125,7 @@ public class Block {
    * @return the transaction.
    */
   public Transaction getTransaction() {
-    return this.transaction;
+    return transaction;
   } // getTransaction()
 
   /**
@@ -167,7 +134,7 @@ public class Block {
    * @return the nonce.
    */
   public long getNonce() {
-    return this.nonce;
+    return nonce;
   } // getNonce()
 
   /**
@@ -176,7 +143,7 @@ public class Block {
    * @return the hash of the previous block.
    */
   public Hash getPrevHash() {
-    return this.prevHash;
+    return prevHash;
   } // getPrevHash
 
   /**
@@ -185,7 +152,7 @@ public class Block {
    * @return the hash of the current block.
    */
   public Hash getHash() {
-    return this.thisHash;
+    return thisHash;
   } // getHash
 
   /**
@@ -196,19 +163,19 @@ public class Block {
   public String toString() {
     StringBuilder str = new StringBuilder();
     str.append("Block ");
-    str.append(this.num);
+    str.append(num);
     str.append(" (Transaction: [Source: ");
-    str.append(this.transaction.getSource());
+    str.append(transaction.getSource());
     str.append(", Target: ");
-    str.append(this.transaction.getTarget());
+    str.append(transaction.getTarget());
     str.append(", Amount: ");
-    str.append(this.transaction.getAmount());
+    str.append(transaction.getAmount());
     str.append(", Nonce: ");
-    str.append(this.nonce);
+    str.append(nonce);
     str.append(", prevHash: ");
-    str.append(this.prevHash);
+    str.append(prevHash);
     str.append(", hash: ");
-    str.append(this.thisHash);
+    str.append(thisHash);
     return str.toString();
   } // toString()
 } // class Block
