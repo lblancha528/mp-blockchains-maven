@@ -131,7 +131,7 @@ public class BlockChain implements Iterable<Transaction> {
   public void append(Block blk) throws Exception {
     if (!check.isValid(blk.thisHash)) {
       System.out.println(blk.thisHash);
-      throw new Exception("Fails validator.");
+      throw new Exception("Fails validator: `" + blk.getNonce() + "`");
     } // if
 
     if (!blk.getHash().equals(blk.computeHash())) {

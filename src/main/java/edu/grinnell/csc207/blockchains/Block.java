@@ -46,10 +46,11 @@ public class Block {
    */
   public Block(int num, Transaction transaction, Hash prevHash, HashValidator check) {
     this(num, transaction, prevHash, (long) 0);
-    while (!check.isValid(computeHash())) {
-      nonce++;
-    } // while
     thisHash = computeHash();
+    while (!check.isValid(thisHash)) {
+      nonce++;
+      thisHash = computeHash();
+    } // while
   } // Block(int, Transaction, Hash, HashValidator)
 
   /**
