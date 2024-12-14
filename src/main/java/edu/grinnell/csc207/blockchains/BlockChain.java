@@ -2,6 +2,7 @@ package edu.grinnell.csc207.blockchains;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -175,13 +176,16 @@ public class BlockChain implements Iterable<Transaction> {
       // update balances
       if (balances.containsKey(here.next.getBlock().getTransaction().getSource())) {
         balances.replace(here.next.getBlock().getTransaction().getSource(),
-            balances.get(here.next.getBlock().getTransaction().getSource()) + here.next.getBlock().getTransaction().getAmount());
+            balances.get(here.next.getBlock().getTransaction().getSource())
+                + here.next.getBlock().getTransaction().getAmount());
       } // if source exists
       if (balances.containsKey(here.next.getBlock().getTransaction().getTarget())) {
         balances.replace(here.next.getBlock().getTransaction().getTarget(),
-            balances.get(here.next.getBlock().getTransaction().getTarget()) - here.next.getBlock().getTransaction().getAmount());
+            balances.get(here.next.getBlock().getTransaction().getTarget())
+                - here.next.getBlock().getTransaction().getAmount());
       } else {
-        balances.put(here.next.getBlock().getTransaction().getTarget(), here.next.getBlock().getTransaction().getAmount());
+        balances.put(here.next.getBlock().getTransaction().getTarget(),
+            here.next.getBlock().getTransaction().getAmount());
       } // if target exists
 
       here.next = null;
@@ -214,7 +218,8 @@ public class BlockChain implements Iterable<Transaction> {
     Node here = this.front;
     Hash prevHolder = this.front.getBlock().getPrevHash();
     while (here != null) {
-      if (check.isValid(here.block.getHash()) && here.block.computeHash().equals(here.block.getHash())
+      if (check.isValid(here.block.getHash())
+          && here.block.computeHash().equals(here.block.getHash())
           && here.block.getPrevHash().equals(prevHolder)
           && checkTransaction(here.block.getTransaction().getSource(),
               here.block.getTransaction().getTarget(), here.block.getTransaction().getAmount())) {
@@ -238,7 +243,8 @@ public class BlockChain implements Iterable<Transaction> {
     dummyList.clear();
     Node here = this.front;
     while (here.next != null) {
-      if (check.isValid(here.block.getHash()) && here.block.computeHash().equals(here.block.getHash())
+      if (check.isValid(here.block.getHash())
+          && here.block.computeHash().equals(here.block.getHash())
           && here.block.getPrevHash().equals(back.block.getHash())
           && checkTransaction(here.block.getTransaction().getSource(),
               here.block.getTransaction().getTarget(), here.block.getTransaction().getAmount())) {
@@ -254,20 +260,15 @@ public class BlockChain implements Iterable<Transaction> {
    * @return an iterator of all the people in the system.
    */
   public Iterator<String> users() {
-    return new Iterator<String>() {
-      String[] userArray = (String[]) balances.keySet().toArray();
-      int here = 0;
+    HashSet<String> users = new HashSet<>();
 
-      public boolean hasNext() {
-        return here < userArray.length;
-      } // hasNext()
+    for (Transaction trans : this) {
+      if (!trans.getTarget().isEmpty()) {
+        users.add(trans.getTarget());
+      } // if
+    } // for
 
-      public String next() {
-        String user = userArray[here];
-        here++;
-        return user;
-      } // next()
-    };
+    return users.iterator();
   } // users()
 
   /**
