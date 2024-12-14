@@ -129,7 +129,7 @@ public class BlockChain implements Iterable<Transaction> {
    * @throws IllegalArgumentException if (a) the hash is not valid, (b) the hash is not appropriate
    *         for the contents, or (c) the previous hash is incorrect.
    */
-  public void append(Block blk) throws Exception {
+  public void append(Block blk) throws IllegalArgumentException {
     if (!check.isValid(blk.getHash())) {
       System.out.println(blk.getHash());
       throw new IllegalArgumentException("Fails validator: `" + blk.getNonce() + "`");

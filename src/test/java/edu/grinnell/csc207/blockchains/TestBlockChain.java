@@ -123,28 +123,13 @@ public class TestBlockChain {
             (hash.length() >= 2) && (hash.get(0) == 2) && (hash.get(1) == 1);
     BlockChain chain = new BlockChain(v);
     Block block1 = chain.mine(new Transaction("", "A", 4321));
-    try {
       chain.append(block1);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     assertEquals(2, chain.getSize(), "M: after appending a block");
     Block block2 = chain.mine(new Transaction("A", "B", 21));
-    try {
       chain.append(block2);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     assertEquals(3, chain.getSize(), "M: after appending two blocks");
     Block block3 = chain.mine(new Transaction("A", "B", 43));
-    try {
       chain.append(block3);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     assertEquals(4, chain.getSize(), "M: after appending three blocks");
   } // testAppend()
 
@@ -158,26 +143,11 @@ public class TestBlockChain {
             (hash.length() >= 2) && (hash.get(0) == 1) && (hash.get(1) == 3);
     BlockChain chain = new BlockChain(v);
     Block block1 = chain.mine(new Transaction("", "A", 4321));
-    try {
       chain.append(block1);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     Block block2 = chain.mine(new Transaction("A", "B", 21));
-    try {
       chain.append(block2);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     Block block3 = chain.mine(new Transaction("A", "B", 43));
-    try {
       chain.append(block3);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
 
     Iterator<Block> blocks = chain.blocks();
     assertTrue(blocks.hasNext(), "M: hasNext at beginning");
@@ -201,26 +171,11 @@ public class TestBlockChain {
             (hash.length() >= 2) && (hash.get(0) == 2) && (hash.get(1) == 3);
     BlockChain chain = new BlockChain(v);
     Block block1 = chain.mine(new Transaction("", "A", 4321));
-    try {
       chain.append(block1);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     Block block2 = chain.mine(new Transaction("A", "B", 21));
-    try {
       chain.append(block2);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     Block block3 = chain.mine(new Transaction("A", "B", 43));
-    try {
       chain.append(block3);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
 
     assertEquals(4, chain.getSize(), "M: size after adding 3 blocks");
     assertTrue(chain.removeLast(), "E: removing from size-4 chain");
@@ -242,59 +197,24 @@ public class TestBlockChain {
             (hash.length() >= 2) && (hash.get(0) == 3) && (hash.get(1) == 3);
     BlockChain chain = new BlockChain(v);
     Block block1 = chain.mine(new Transaction("", "A", 4321));
-    try {
       chain.append(block1);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     Block block2 = chain.mine(new Transaction("A", "B", 21));
-    try {
       chain.append(block2);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     Block block3 = chain.mine(new Transaction("A", "B", 43));
-    try {
       chain.append(block3);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
 
     assertTrue(chain.removeLast(), "E: removing from size-4 chain");
     assertTrue(chain.removeLast(), "E: removing from size-3 chain");
     block2 = chain.mine(new Transaction("A", "B", 21));
-    try {
       chain.append(block2);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     assertTrue(chain.removeLast(), "M: removing from size-3 chain");
     block2 = chain.mine(new Transaction("A", "B", 21));
-    try {
       chain.append(block2);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     block3 = chain.mine(new Transaction("A", "B", 43));
-    try {
       chain.append(block3);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     assertTrue(chain.removeLast(), "M: removing from size-4 chain");
     block3 = chain.mine(new Transaction("A", "B", 43));
-    try {
       chain.append(block3);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
 
     Iterator<Block> blocks = chain.blocks();
     assertTrue(blocks.hasNext(), "M: hasNext at beginning");
@@ -321,12 +241,7 @@ public class TestBlockChain {
     assertEquals(0, chain.balance("B"), "M: B's initial balance");
     assertEquals(0, chain.balance("C"), "M: C's initial balance");
 
-    try {
       chain.append(chain.mine(new Transaction("", "A", 100)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     assertEquals(100, chain.balance("A"), "M: A's second balance");
     assertEquals(0, chain.balance("B"), "M: B's second balance");
     assertEquals(0, chain.balance("C"), "M: C's second balance");
@@ -336,52 +251,32 @@ public class TestBlockChain {
     assertEquals(0, chain.balance("B"), "E: B's third balance");
     assertEquals(0, chain.balance("C"), "E: C's third balance");
 
-    try {
       chain.append(chain.mine(new Transaction("", "A", 50)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertEquals(50, chain.balance("A"), "E: A's fourth balance");
     assertEquals(0, chain.balance("B"), "E: B's fourth balance");
     assertEquals(0, chain.balance("C"), "E: C's fourth balance");
 
-    try {
       chain.append(chain.mine(new Transaction("", "A", 50)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertEquals(100, chain.balance("A"), "E: A's fifth balance");
     assertEquals(0, chain.balance("B"), "E: B's fifth balance");
     assertEquals(0, chain.balance("C"), "E: C's fifth balance");
 
-    try {
       chain.append(chain.mine(new Transaction("A", "B", 20)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertEquals(80, chain.balance("A"), "E: A's sixth balance");
     assertEquals(20, chain.balance("B"), "E: B's sixth balance");
     assertEquals(0, chain.balance("C"), "E: C's sixth balance");
 
-    try {
       chain.append(chain.mine(new Transaction("", "C", 50)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertEquals(80, chain.balance("A"), "E: A's seventh balance");
     assertEquals(20, chain.balance("B"), "E: B's seventh balance");
     assertEquals(50, chain.balance("C"), "E: C's seventh balance");
 
-    try {
       chain.append(chain.mine(new Transaction("C", "B", 30)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertEquals(80, chain.balance("A"), "E: A's eighth balance");
     assertEquals(50, chain.balance("B"), "E: B's eighth balance");
     assertEquals(20, chain.balance("C"), "E: C's eighth balance");
@@ -399,63 +294,35 @@ public class TestBlockChain {
 
     assertArrayEquals(new String[] {}, users(chain), "No users");
 
-    try {
       chain.append(chain.mine(new Transaction("", "B", 100)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertArrayEquals(new String[] {"B"}, users(chain), "E: B");
 
-    try {
       chain.append(chain.mine(new Transaction("B", "D", 10)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertArrayEquals(new String[] {"B", "D"}, users(chain), "E: B and D");
 
-    try {
       chain.append(chain.mine(new Transaction("B", "C", 10)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertArrayEquals(new String[] {"B", "C", "D"}, users(chain), "E: B-D");
 
-    try {
       chain.append(chain.mine(new Transaction("B", "C", 10)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertArrayEquals(new String[] {"B", "C", "D"}, users(chain), 
         "E: A-D, with extra C (not a different user)");
 
-    try {
       chain.append(chain.mine(new Transaction("C", "D", 10)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertArrayEquals(new String[] {"B", "C", "D"}, users(chain), 
         "E: B-D, with extra C and D");
 
-    try {
       chain.append(chain.mine(new Transaction("D", "E", 10)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertArrayEquals(new String[] {"B", "C", "D", "E"}, users(chain), 
         "E: B-E, with extra C and D");
 
-    try {
       chain.append(chain.mine(new Transaction("B", "A", 10)));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     assertArrayEquals(new String[] {"A", "B", "C", "D", "E"}, users(chain), 
         "E: A-E, with extra C and D");
   } // testUsers()
