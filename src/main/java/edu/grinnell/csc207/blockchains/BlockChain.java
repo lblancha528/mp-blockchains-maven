@@ -37,10 +37,10 @@ public class BlockChain implements Iterable<Transaction> {
   HashValidator check;
 
   /** To store existing people and their balances. */
-  static HashMap<String, Integer> balances = new HashMap<String, Integer>(10);
+  HashMap<String, Integer> balances = new HashMap<String, Integer>(10);
 
   /** A dummy list for use in isCorrect() and check(). */
-  static HashMap<String, Integer> dummyList = new HashMap<String, Integer>(10);
+  HashMap<String, Integer> dummyList = new HashMap<String, Integer>(10);
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -213,9 +213,9 @@ public class BlockChain implements Iterable<Transaction> {
     dummyList.clear();
     Node here = this.front;
     Hash prevHolder = this.front.getBlock().getPrevHash();
-    while (here.next != null) {
-      if (check.isValid(here.block.getHash()) && here.block.computeHash() == here.block.getHash()
-          && here.block.getPrevHash() == prevHolder
+    while (here != null) {
+      if (check.isValid(here.block.getHash()) && here.block.computeHash().equals(here.block.getHash())
+          && here.block.getPrevHash().equals(prevHolder)
           && checkTransaction(here.block.getTransaction().getSource(),
               here.block.getTransaction().getTarget(), here.block.getTransaction().getAmount())) {
         prevHolder = here.getBlock().getHash();
@@ -238,8 +238,8 @@ public class BlockChain implements Iterable<Transaction> {
     dummyList.clear();
     Node here = this.front;
     while (here.next != null) {
-      if (check.isValid(here.block.getHash()) && here.block.computeHash() == here.block.getHash()
-          && here.block.getPrevHash() == back.block.getHash()
+      if (check.isValid(here.block.getHash()) && here.block.computeHash().equals(here.block.getHash())
+          && here.block.getPrevHash().equals(back.block.getHash())
           && checkTransaction(here.block.getTransaction().getSource(),
               here.block.getTransaction().getTarget(), here.block.getTransaction().getAmount())) {
       } else {
