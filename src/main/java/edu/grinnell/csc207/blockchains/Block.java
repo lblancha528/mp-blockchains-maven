@@ -17,19 +17,19 @@ public class Block {
   // +--------+
 
   /** The block number. */
-  static int num;
+  private int num;
 
   /** The transaction. */
-  static Transaction transaction;
+  public Transaction transaction;
 
   /** The previous hash. */
-  static Hash prevHash = null;
+  private Hash prevHash = null;
 
   /** The nonce. */
-  static long nonce;
+  public long nonce;
 
   /** The hash of this block. */
-  static Hash thisHash;
+  private Hash thisHash;
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -80,24 +80,24 @@ public class Block {
    * 
    * @return the hash
    */
-  static Hash computeHash() {
+  public Hash computeHash() {
     MessageDigest md;
     try {
       md = MessageDigest.getInstance("sha-256");
       byte[] numbytes = ByteBuffer.allocate(Integer.BYTES).putInt(num).array();
       md.update(numbytes);
-      if (transaction.getSource() != null) {
-        md.update(transaction.getSource().getBytes());
+      if (getTransaction().getSource() != null) {
+        md.update(getTransaction().getSource().getBytes());
       } // if source exists
-      if (transaction.getTarget() != null) {
-        md.update(transaction.getTarget().getBytes());
+      if (getTransaction().getTarget() != null) {
+        md.update(getTransaction().getTarget().getBytes());
       } // if target exists
-      byte[] amtbytes = ByteBuffer.allocate(Integer.BYTES).putInt(transaction.getAmount()).array();
+      byte[] amtbytes = ByteBuffer.allocate(Integer.BYTES).putInt(getTransaction().getAmount()).array();
       md.update(amtbytes);
-      if (prevHash != null) {
-        md.update(prevHash.getBytes());
+      if (getPrevHash() != null) {
+        md.update(getPrevHash().getBytes());
       } // if prevHash exists
-      byte[] noncebytes = ByteBuffer.allocate(Long.BYTES).putLong(nonce).array();
+      byte[] noncebytes = ByteBuffer.allocate(Long.BYTES).putLong(getNonce()).array();
       md.update(noncebytes);
 
       return new Hash(md.digest());
