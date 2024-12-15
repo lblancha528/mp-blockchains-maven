@@ -39,15 +39,15 @@ public class Block {
    * Create a new block from the specified block number, transaction, and previous hash, mining to
    * choose a nonce that meets the requirements of the validator.
    *
-   * @param num The number of the block.
-   * @param transaction The transaction for the block.
-   * @param prevHash The hash of the previous block.
-   * @param check The validator used to check the block.
+   * @param num1 The number of the block.
+   * @param transaction1 The transaction for the block.
+   * @param prevHash1 The hash of the previous block.
+   * @param check1 The validator used to check the block.
    */
-  public Block(int num, Transaction transaction, Hash prevHash, HashValidator check) {
-    this(num, transaction, prevHash, (long) 0);
+  public Block(int num1, Transaction transaction1, Hash prevHash1, HashValidator check1) {
+    this(num1, transaction1, prevHash1, (long) 0);
     thisHash = computeHash();
-    while (!check.isValid(thisHash)) {
+    while (!check1.isValid(thisHash)) {
       nonce++;
       thisHash = computeHash();
     } // while
@@ -56,10 +56,10 @@ public class Block {
   /**
    * Create a new block, computing the hash for the block.
    *
-   * @param num The number of the block.
-   * @param transaction The transaction for the block.
-   * @param prevHash The hash of the previous block.
-   * @param nonce The nonce of the block.
+   * @param num1 The number of the block.
+   * @param transaction1 The transaction for the block.
+   * @param prevHash1 The hash of the previous block.
+   * @param nonce1 The nonce of the block.
    */
   public Block(int num1, Transaction transaction1, Hash prevHash1,
       long nonce1) /* throws NoSuchAlgorithmException */ {
@@ -77,7 +77,7 @@ public class Block {
 
   /**
    * Compute the hash of the block given all the other info already stored in the block.
-   * 
+   *
    * @return the hash
    */
   public Hash computeHash() {
@@ -92,7 +92,8 @@ public class Block {
       if (getTransaction().getTarget() != null) {
         md.update(getTransaction().getTarget().getBytes());
       } // if target exists
-      byte[] amtbytes = ByteBuffer.allocate(Integer.BYTES).putInt(getTransaction().getAmount()).array();
+      byte[] amtbytes =
+          ByteBuffer.allocate(Integer.BYTES).putInt(getTransaction().getAmount()).array();
       md.update(amtbytes);
       if (getPrevHash() != null) {
         md.update(getPrevHash().getBytes());
@@ -103,7 +104,7 @@ public class Block {
       return new Hash(md.digest());
     } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
-    }
+    } // try/catch
     return null;
   } // computeHash()
 

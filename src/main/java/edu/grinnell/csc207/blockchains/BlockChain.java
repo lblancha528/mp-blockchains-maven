@@ -1,10 +1,8 @@
 package edu.grinnell.csc207.blockchains;
 
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * A full blockchain.
@@ -18,7 +16,7 @@ public class BlockChain implements Iterable<Transaction> {
   // +--------+
 
   /**
-   * The front of the list;
+   * The front of the list.
    */
   Node front;
 
@@ -50,13 +48,14 @@ public class BlockChain implements Iterable<Transaction> {
   /**
    * Create a new blockchain using a validator to check elements.
    *
-   * @param check The validator used to check elements.
+   * @param check1 The validator used to check elements.
    */
-  public BlockChain(HashValidator check) {
-    this.front = new Node(new Block(0, new Transaction("", "", 0), new Hash(new byte[] {}), check));
+  public BlockChain(HashValidator check1) {
+    this.front =
+        new Node(new Block(0, new Transaction("", "", 0), new Hash(new byte[] {}), check1));
     this.size = 1;
     this.back = this.front;
-    this.check = check;
+    this.check = check1;
   } // BlockChain(HashValidator)
 
   // +---------+-----------------------------------------------------
@@ -67,7 +66,7 @@ public class BlockChain implements Iterable<Transaction> {
    * Check if a transaction is valid. A transaction is valid if the source exists and has a balance
    * equal to or greater than the transaction amount. Since this is just a helper for check() and
    * isCorrect(), it also updates the dummyList if the transaction is valid.
-   * 
+   *
    * @param p1 sender
    * @param p2 reciever
    * @param amt the amount to send
@@ -96,17 +95,33 @@ public class BlockChain implements Iterable<Transaction> {
     return true;
   } // checkTransaction(String, String, int)
 
+  /**
+   * Returns the first node.
+   *
+   * @return the first node
+   */
   public Node getFront() {
     return this.front;
   } // getFront()
 
+  /**
+   * Returns the last node.
+   *
+   * @return the last node
+   */
   public Node getBack() {
     return this.back;
   } // getBack()
 
+  /**
+   * Returns the hash of users and balances.
+   *
+   * @return the hash of users and balances
+   */
   public HashMap<String, Integer> getBalances() {
     return balances;
-  }
+  } // getBalances()
+
   // +---------+-----------------------------------------------------
   // | Methods |
   // +---------+
@@ -141,7 +156,6 @@ public class BlockChain implements Iterable<Transaction> {
    */
   public void append(Block blk) throws IllegalArgumentException {
     if (!check.isValid(blk.getHash())) {
-      System.out.println(blk.getHash());
       throw new IllegalArgumentException("Fails validator: `" + blk.getNonce() + "`");
     } // if
 
@@ -150,7 +164,6 @@ public class BlockChain implements Iterable<Transaction> {
     } // if
 
     if (!blk.getPrevHash().equals(back.block.getHash())) {
-      System.out.println("" + back.block.getHash() + " " + blk.getPrevHash());
       throw new IllegalArgumentException("Prev hash wrong.");
     } // if
 

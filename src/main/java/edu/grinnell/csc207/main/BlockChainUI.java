@@ -8,7 +8,6 @@ import edu.grinnell.csc207.blockchains.Transaction;
 import edu.grinnell.csc207.util.IOUtils;
 
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -133,13 +132,15 @@ public class BlockChainUI {
             Block curr = blocks.next();
             if (curr.getTransaction().getSource() == null) {
               pen.printf(
-                  "Block %d (Transactions: [Deposit, Target: %s, Amount: %d], Nonce: %d, prevHash: %s, hash: %s)",
+                  "Block %d (Transactions: [Deposit, Target: %s, Amount: %d], "
+                      + "Nonce: %d, prevHash: %s, hash: %s)",
                   curr.getNum(), curr.getTransaction().getTarget(),
                   curr.getTransaction().getAmount(), curr.getNonce(), curr.getPrevHash().toString(),
                   curr.getHash().toString());
             } else {
               pen.printf(
-                  "Block %d (Transactions: [Source %s, Target: %s, Amount: %d], Nonce: %d, prevHash: %s, hash: %s)",
+                  "Block %d (Transactions: [Source %s, Target: %s, Amount: %d], "
+                      + "Nonce: %d, prevHash: %s, hash: %s)",
                   curr.getNum(), curr.getTransaction().getSource(),
                   curr.getTransaction().getTarget(), curr.getTransaction().getAmount(),
                   curr.getNonce(), curr.getPrevHash().toString(), curr.getHash().toString());

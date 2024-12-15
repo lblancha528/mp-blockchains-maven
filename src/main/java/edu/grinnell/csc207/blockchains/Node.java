@@ -14,15 +14,30 @@ public class Node {
    */
   Node next;
 
-  public Node(Block block) {
-    this.block = block;
+  /**
+   * Creates a new node with the provided block.
+   *
+   * @param block1
+   */
+  public Node(Block block1) {
+    this.block = block1;
     this.next = null;
   } // Node(Block)
 
+  /**
+   * Returns the block of this node.
+   *
+   * @return this block
+   */
   public Block getBlock() {
     return this.block;
   } // getBlock()
 
+  /**
+   * Returns the next node.
+   *
+   * @return the next node
+   */
   public Node getNext() {
     return this.next;
   } // getNext()

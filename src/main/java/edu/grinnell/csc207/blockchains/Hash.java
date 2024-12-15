@@ -1,6 +1,5 @@
 package edu.grinnell.csc207.blockchains;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
@@ -94,11 +93,7 @@ public class Hash {
   public boolean equals(Object other) {
     if (other instanceof Hash) {
       Hash o = (Hash) other;
-      if (Arrays.equals(o.contents, this.contents)) {
-        return true;
-      } else {
-        return false;
-      } // if
+      return Arrays.equals(o.contents, this.contents);
     } else {
       return false;
     } // if
