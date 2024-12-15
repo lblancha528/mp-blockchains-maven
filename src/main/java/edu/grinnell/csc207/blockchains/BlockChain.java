@@ -53,7 +53,7 @@ public class BlockChain implements Iterable<Transaction> {
    * @param check The validator used to check elements.
    */
   public BlockChain(HashValidator check) {
-    this.front = new Node(new Block(0, new Transaction(null, null, 0), null, check));
+    this.front = new Node(new Block(0, new Transaction("", "", 0), new Hash(new byte[] {}), check));
     this.size = 1;
     this.back = this.front;
     this.check = check;
@@ -74,17 +74,26 @@ public class BlockChain implements Iterable<Transaction> {
    * @return whether the transaction is valid
    */
   public boolean checkTransaction(String p1, String p2, int amt) {
-    if (dummyList.containsKey(p1) && dummyList.get(p1) >= amt) {
-      dummyList.replace(p1, dummyList.get(p1) - amt);
-      if (dummyList.containsKey(p2)) {
-        dummyList.replace(p2, dummyList.get(p2) + amt);
+    if (p1.equals("") && amt > -1) {
+      // if deposit
+      if (!dummyList.containsKey("Bank")) {
+        dummyList.put("Bank", 1000);
       } else {
-        dummyList.put(p2, amt);
-      } // if target exists
-      return true;
+        dummyList.replace("Bank", dummyList.get("Bank") - amt);
+      } // if bank does not exist
+    } else if (dummyList.containsKey(p1) && dummyList.get(p1) >= amt && amt > -1) {
+      dummyList.replace(p1, dummyList.get(p1) - amt);
     } else {
       return false;
     } // if
+
+    if (dummyList.containsKey(p2)) {
+      dummyList.replace(p2, dummyList.get(p2) + amt);
+    } else {
+      dummyList.put(p2, amt);
+    } // if target exists
+
+    return true;
   } // checkTransaction(String, String, int)
 
   public Node getFront() {
@@ -240,18 +249,11 @@ public class BlockChain implements Iterable<Transaction> {
    * @throws Exception If things are wrong at any block.
    */
   public void check() throws Exception {
-    dummyList.clear();
-    Node here = this.front;
-    while (here.next != null) {
-      if (check.isValid(here.block.getHash())
-          && here.block.computeHash().equals(here.block.getHash())
-          && here.block.getPrevHash().equals(back.block.getHash())
-          && checkTransaction(here.block.getTransaction().getSource(),
-              here.block.getTransaction().getTarget(), here.block.getTransaction().getAmount())) {
-      } else {
-        throw new Exception("Block " + here.block.getNum() + " is invalid.\n");
-      } // if
-    } // while
+    if (!isCorrect()) {
+      throw new Exception("Chain is invalid.\n");
+    } else {
+      return;
+    } // if
   } // check()
 
   /**
@@ -279,11 +281,18 @@ public class BlockChain implements Iterable<Transaction> {
    * @return that user's balance (or 0, if the user is not in the system).
    */
   public int balance(String user) {
-    if (balances.containsKey(user)) {
-      return balances.get(user);
-    } else {
-      return 0;
-    } // if
+    int bal = 0;
+
+    for (Transaction trans : this) {
+      if (trans.getTarget().equals(user)) {
+        bal += trans.getAmount();
+      } // if
+      if (trans.getSource().equals(user)) {
+        bal -= trans.getAmount();
+      } // if
+    } // for
+
+    return bal;
   } // balance()
 
   /**
